@@ -4,7 +4,7 @@ use super::JITBackend;
 use crate::blocks::{Block, ComparatorMode};
 use crate::plot::PlotWorld;
 use crate::redpiler::compile_graph::{CompileGraph, LinkType, NodeIdx};
-use crate::redpiler::{block_powered_mut, bool_to_ss};
+use crate::redpiler::{block_powered_mut, bool_to_ss, block_is_dot};
 use crate::world::World;
 use mchprs_blocks::block_entities::BlockEntity;
 use mchprs_blocks::BlockPos;
@@ -115,7 +115,11 @@ enum NodeType {
 }
 
 impl NodeType {
-    fn is_io_block(self) -> bool {
+    fn is_io_block(self, block: Block) -> bool {
+        if block_is_dot(block) {
+            return true;
+        }
+
         matches!(
             self,
             NodeType::Lamp
@@ -356,7 +360,7 @@ impl JITBackend for DirectBackend {
                 plot.set_block_entity(pos, block_entity);
             }
 
-            if io_only && !node.ty.is_io_block() {
+            if io_only && !node.ty.is_io_block(block) {
                 plot.set_block(pos, block);
             }
         }
@@ -504,7 +508,7 @@ impl JITBackend for DirectBackend {
             let Some((pos, block)) = &mut self.blocks[i] else {
                 continue;
             };
-            if node.changed && (!io_only || node.ty.is_io_block()) {
+            if node.changed && (!io_only || node.ty.is_io_block(*block)) {
                 if let Some(powered) = block_powered_mut(block) {
                     *powered = node.powered
                 }

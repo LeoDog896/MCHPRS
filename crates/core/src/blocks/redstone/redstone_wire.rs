@@ -302,7 +302,7 @@ impl RedstoneWire {
         state
     }
 
-    fn is_dot(self) -> bool {
+    pub fn is_dot(self) -> bool {
         self.north == RedstoneWireSide::None
             && self.south == RedstoneWireSide::None
             && self.east == RedstoneWireSide::None

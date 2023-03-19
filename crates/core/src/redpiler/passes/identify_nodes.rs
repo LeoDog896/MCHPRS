@@ -11,7 +11,7 @@ use super::Pass;
 use crate::blocks::Block;
 use crate::plot::PlotWorld;
 use crate::redpiler::compile_graph::{CompileGraph, CompileNode, NodeState, NodeType};
-use crate::redpiler::{CompilerInput, CompilerOptions};
+use crate::redpiler::{CompilerInput, CompilerOptions, block_is_dot};
 use crate::world::World;
 use mchprs_blocks::block_entities::BlockEntity;
 use mchprs_blocks::BlockPos;
@@ -66,7 +66,7 @@ fn for_pos(ignore_wires: bool, plot: &PlotWorld, graph: &mut CompileGraph, pos: 
         false
     };
 
-    if ignore_wires && ty == NodeType::Wire {
+    if ignore_wires && ty == NodeType::Wire && !block_is_dot(block) {
         return;
     }
 

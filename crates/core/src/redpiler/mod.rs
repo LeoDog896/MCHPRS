@@ -3,7 +3,7 @@ mod compile_graph;
 // mod debug_graph;
 mod passes;
 
-use crate::blocks::Block;
+use crate::blocks::{Block, RedstoneWire, RedstoneWireSide};
 use crate::plot::PlotWorld;
 use crate::world::World;
 use backend::JITBackend;
@@ -33,6 +33,13 @@ fn block_powered_mut(block: &mut Block) -> Option<&mut bool> {
         Block::IronTrapdoor { powered, .. } => powered,
         _ => return None,
     })
+}
+
+fn block_is_dot(block: Block) -> bool {
+    match block {
+        Block::RedstoneWire { wire } => wire.is_dot(),
+        _ => false,
+    }
 }
 
 #[derive(Default)]
